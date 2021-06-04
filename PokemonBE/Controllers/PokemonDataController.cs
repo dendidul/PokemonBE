@@ -30,8 +30,31 @@ namespace PokemonBE.Controllers
         {
             try
             {
-                var IsValid = PokemonDataDao.ValidateUser(model);
-                return Json(new { status = StatusCodes.Status200OK, result = IsValid, message = "success" });
+
+                var data = PokemonDataDao.ValidateUser(model);
+
+                if (data != null)
+                {
+                    return Json(new { status = StatusCodes.Status200OK, result = data, message = "valid" });
+                }
+                else
+                {
+                 
+                    var IsExist = PokemonDataDao.CheckExistsUser(model);
+
+                    if (IsExist == true)
+                    {
+                        return Json(new { status = StatusCodes.Status200OK, result = false, message = "Username / password not valid" });
+                    }
+                    else
+                    {
+                        var IsValid = PokemonDataDao.CreateUser(model);
+                        var newuserdata = PokemonDataDao.GetUserById(IsValid);
+                        return Json(new { status = StatusCodes.Status200OK, result = newuserdata, message = "success" });
+                    }
+                }
+
+
             }
             catch (Exception ex)
             {

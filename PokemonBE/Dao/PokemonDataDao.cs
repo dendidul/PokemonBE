@@ -31,9 +31,9 @@ namespace PokemonBE.Dao
         }
 
 
-        public bool ValidateUser(UserModel model)
+        public UserModel ValidateUser(UserModel model)
         {
-            var data = false;
+            var data = new UserModel();
 
             try
             {
@@ -48,7 +48,7 @@ namespace PokemonBE.Dao
                                               ,[username]
                                               ,[password]
                                           FROM [tbl_user] where username = @username and password = @password ", 
-                                                new { @username = model.username , @password = model.password}).Any();
+                                                new { @username = model.username , @password = model.password}).FirstOrDefault();
 
 
 
@@ -102,6 +102,44 @@ namespace PokemonBE.Dao
             return data;
         }
 
+        public UserModel GetUserById(UserModel model)
+        {
+            var data = new UserModel();
+
+            try
+            {
+                using (IDbConnection conn = Connection)
+                {
+
+
+
+
+                    data = conn.Query<UserModel>(
+                                                @"SELECT  [id]
+                                                      ,[username]
+                                                      ,[password]
+                                                     FROM [tbl_user] where id = @id
+                                                    ", new
+                                                {
+                                                    @id = model.id
+                                                   
+                                                }).FirstOrDefault();
+
+
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+
+            }
+            return data;
+
+        }
+
         public UserModel CreateUser(UserModel model)
         {
             var data = new UserModel();
@@ -117,7 +155,7 @@ namespace PokemonBE.Dao
                     data = conn.Query<UserModel>(
                                                 @"insert into tbl_user (Username,Password) 
                                                  values(@username,@password)
-
+                                                    SELECT SCOPE_IDENTITY() as id
                                                     ", new { @username = model.username,
                                                     @password = model.password }).FirstOrDefault();
 
