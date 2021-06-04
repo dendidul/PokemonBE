@@ -13,6 +13,8 @@ namespace PokemonBE.Models
 
         public int? pokemon_id { get; set; }
 
+        public string pokemon_img { get; set; }
+
         public string pokemon_origin_name { get; set; }
 
         public string pokemon_nickname { get; set; }

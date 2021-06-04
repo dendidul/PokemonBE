@@ -101,7 +101,7 @@ namespace PokemonBE.Controllers
             {
                 var checkIsExists = PokemonDataDao.CheckExistsPokemonNickName(model);
 
-                if(checkIsExists == true)
+                if(checkIsExists > 0)
                 {
                     
                     return Json(new { status = StatusCodes.Status200OK, result = false, message = "your pokemon name has been used" });
@@ -109,7 +109,7 @@ namespace PokemonBE.Controllers
                 else
                 {
                     var IsValid = PokemonDataDao.CreateUserPokemon(model);
-                    return Json(new { status = StatusCodes.Status200OK, result = true, message = "success" });
+                    return Json(new { status = StatusCodes.Status200OK, result = IsValid, message = "success" });
                 }
 
                
@@ -129,7 +129,7 @@ namespace PokemonBE.Controllers
             {
                 var checkIsExists = PokemonDataDao.CheckExistsPokemonNickName(model);
 
-                if (checkIsExists == true)
+                if (checkIsExists > 1)
                 {
                   
                     return Json(new { status = StatusCodes.Status200OK, result = false, message = "your pokemon name has been used" });
@@ -159,6 +159,46 @@ namespace PokemonBE.Controllers
                     var data = PokemonDataDao.GetListPokemon(model);
                     return Json(new { status = StatusCodes.Status200OK, result = data, message = "success" });
                
+
+
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new { status = StatusCodes.Status400BadRequest, result = false, message = "error" });
+            }
+        }
+
+        [HttpPost]
+        [Route("~/api/PokemonData/GetUserPokemonById")]
+        public IActionResult GetUserPokemonById(UserListPokemonModel model)
+        {
+            try
+            {
+
+                var data = PokemonDataDao.GetUserPokemonById(model);
+                return Json(new { status = StatusCodes.Status200OK, result = data, message = "success" });
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new { status = StatusCodes.Status400BadRequest, result = false, message = "error" });
+            }
+        }
+
+        [HttpPost]
+        [Route("~/api/PokemonData/DeleteUserListPokemonById")]
+        public IActionResult DeleteUserListPokemonById(UserListPokemonModel model)
+        {
+            try
+            {
+
+                PokemonDataDao.DeleteUserListPokemonById(model);
+                return Json(new { status = StatusCodes.Status200OK, result = true, message = "success" });
+
 
 
             }

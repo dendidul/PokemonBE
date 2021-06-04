@@ -190,17 +190,61 @@ namespace PokemonBE.Dao
                                                 @"INSERT INTO [dbo].[tbl_user_list_pokemon]
                                                    ([user_id]
                                                    ,[pokemon_id]
+                                                    ,pokemon_img
                                                    ,[pokemon_origin_name]
                                                    ,[pokemon_nickname])
                                              VALUES
-                                                   (@user_id,
-                                                   ,@pokemon_id,
-                                                   ,@pokemon_origin_name,
-                                                   ,@pokemon_nickname)      
+                                                   (@user_id
+                                                   ,@pokemon_id
+                                                   ,@pokemon_img
+                                                   ,@pokemon_origin_name
+                                                   ,@pokemon_nickname) 
+                                                    SELECT SCOPE_IDENTITY() as id
                                                     ", new { @user_id = model.user_id,
                                                             @pokemon_id = model.pokemon_id,
+                                                            @pokemon_img = model.pokemon_img,
                                                             @pokemon_origin_name = model.pokemon_origin_name,
                                                             @pokemon_nickname = model.pokemon_nickname
+                                                }).FirstOrDefault();
+
+
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+
+            }
+            return data;
+
+        }
+
+        public UserListPokemonModel GetUserPokemonById(UserListPokemonModel model)
+        {
+            var data = new UserListPokemonModel();
+
+            try
+            {
+                using (IDbConnection conn = Connection)
+                {
+
+
+
+
+                    data = conn.Query<UserListPokemonModel>(
+                                                @"select [id]
+                                                  ,[user_id]
+                                                  ,[pokemon_id]
+                                                  ,pokemon_img
+                                                  ,[pokemon_origin_name]
+                                                  ,[pokemon_nickname] from tbl_user_list_pokemon
+                                                 WHERE  id= @id
+                                                    ", new
+                                                {                                                    
+                                                    @id = model.id
                                                 }).FirstOrDefault();
 
 
@@ -235,6 +279,7 @@ namespace PokemonBE.Dao
                                                    SET [user_id] = @user_id
                                                       ,[pokemon_id] = @pokemon_id
                                                       ,[pokemon_origin_name] = @pokemon_origin_name
+                                                       ,[pokemon_img] = @pokemon_img
                                                       ,[pokemon_nickname] = @pokemon_nickname
                                                  WHERE  id= @id
                                                     ", new
@@ -242,6 +287,7 @@ namespace PokemonBE.Dao
                                                     @user_id = model.user_id,
                                                     @pokemon_id = model.pokemon_id,
                                                     @pokemon_origin_name = model.pokemon_origin_name,
+                                                    @pokemon_img = model.pokemon_img,
                                                     @pokemon_nickname = model.pokemon_nickname,
                                                     @id = model.id
                                                 }).FirstOrDefault();
@@ -261,9 +307,9 @@ namespace PokemonBE.Dao
 
         }
 
-        public bool CheckExistsPokemonNickName(UserListPokemonModel model)
+        public int CheckExistsPokemonNickName(UserListPokemonModel model)
         {
-            var data = false;
+            var data = 0;
 
             try
             {
@@ -277,6 +323,7 @@ namespace PokemonBE.Dao
                                                 @"SELECT [id]
                                                   ,[user_id]
                                                   ,[pokemon_id]
+                                                    ,[pokemon_img]
                                                   ,[pokemon_origin_name]
                                                   ,[pokemon_nickname]
                                               FROM [pokemon].[dbo].[tbl_user_list_pokemon]
@@ -284,7 +331,7 @@ namespace PokemonBE.Dao
                                                 new { @user_id = model.user_id,
                                                     @pokemon_origin_name = model.pokemon_origin_name,
                                                     @pokemon_nickname = model.pokemon_nickname
-                                                }).Any();
+                                                }).Count();
 
 
 
@@ -298,6 +345,26 @@ namespace PokemonBE.Dao
 
             }
             return data;
+        }
+
+        public void DeleteUserListPokemonById(UserListPokemonModel model)
+        {
+            try
+            {
+                using (IDbConnection conn = Connection)
+                {
+                    conn.Execute("delete from tbl_user_list_pokemon where id = @id",
+                                new
+                                {
+                                    @id = model.id
+                                });
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public List<UserListPokemonModel> GetListPokemon(UserListPokemonModel model)
@@ -316,6 +383,7 @@ namespace PokemonBE.Dao
                                                 @"SELECT [id]
                                                       ,[user_id]
                                                       ,[pokemon_id]
+                                                        ,[pokemon_img]
                                                       ,[pokemon_origin_name]
                                                       ,[pokemon_nickname]
                                                   FROM [pokemon].[dbo].[tbl_user_list_pokemon]
