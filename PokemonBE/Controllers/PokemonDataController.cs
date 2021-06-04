@@ -20,7 +20,7 @@ namespace PokemonBE.Controllers
 
         public PokemonDataController(IConfiguration config)
         {
-            this.PokemonDataDao = new PokemonDataDao(config);
+            this.PokemonDataDao = new PokemonDataDao(config) ;
         }
 
 
