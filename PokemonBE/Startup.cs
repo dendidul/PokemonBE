@@ -91,7 +91,7 @@ namespace PokemonBE
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fameo API");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pokemon API");
             });
 
             app.UseMvc();
